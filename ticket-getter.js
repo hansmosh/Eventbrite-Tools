@@ -6,9 +6,9 @@
  */
 
 var OPTIONS = {
-	startTime: "2017-05-19T15:59:55", // When should this script start checking for tickets (e.g. 5 seconds before official release time)
+	startTime: "2018-08-05T12:59:55", // When should this script start checking for tickets (e.g. 5 seconds before official release time)
 	ticketIndex: 0, // There may be several ticket types in the list - set to 0 to select the first one
-	ticketQuantity: 1 // How many tickets you want to buy? - WARNING: Often limited by the event organizer to 1
+	ticketQuantity: 4 // How many tickets you want to buy? - WARNING: Often limited by the event organizer to 1
 };
 
 function checkLocation() {
