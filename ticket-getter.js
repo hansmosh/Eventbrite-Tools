@@ -59,7 +59,8 @@ function isTicketAvailable(source) {
 	const ticketData = mediator && mediator.get('ticketOrderOptions');
 	if (ticketData && ticketData.collection) {
 		const ticket = ticketData.collection[OPTIONS.ticketIndex];
-		if (ticket && (ticket.status_is_sold_out || ticket.status_is_ended)) {
+		if (ticket && ((ticket.status_is_sold_out && !ticket.status_is_unavailable) || ticket.status_is_ended)) {
+			console.log(ticket);
 			throw new Error("SOLD OUT: " + ticket.status_is_sold_out + " or ENDED: " + ticket.status_is_ended);
 		}				
 	}
@@ -80,7 +81,8 @@ function run() {
 	$.get(location.href, (data) => {
 		const ticket = getTicket(data);
 		if (!ticket || !isTicketAvailable(data)) {
-			console.log("Unsuccessful: " + (new Date()).toLocaleTimeString());
+		  const moment = require('moment');
+			console.log("Unsuccessful: " + moment(new Date()).format('MMMM Do YYYY, h:mm:ss a'));
 			if (running) {
 				setTimeout(run, 1000);
 			}
@@ -92,7 +94,7 @@ function run() {
 			[ticket]: OPTIONS.ticketQuantity
 		};
 		console.log(payload);
-		post("https://www.eventbrite.co.uk/orderstart", payload);
+		post("https://www.eventbrite.com/orderstart", payload);
 	});
 }
 
@@ -115,7 +117,7 @@ $(document).ready(function() {
 	checkLocation();
 	const diff = Date.parse(OPTIONS.startTime) - Date.now();
 	const timeToStart = Math.max(0, diff || 0);
-	console.log(`Scheduled start in:` +
+	console.log(`Scheduled start in: ` +
 		`${Math.floor(timeToStart / (1000 * 60))}m ` +
 		`${Math.floor(timeToStart / 1000)%60}s`);
 

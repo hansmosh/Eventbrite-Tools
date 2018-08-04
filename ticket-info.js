@@ -12,6 +12,7 @@ function checkLocation() {
 }
 
 function parseMediatorData(data) {
+	const moment = require('moment');
 	return data.collection.map(function(item) {
 		return {
 			"name": item.ticket_name,
@@ -29,8 +30,8 @@ function parseMediatorData(data) {
 				"on_sale_status": item.on_sale_status
 			},
 			"dates": {
-				"sales_start": new Date(item.start_sales).toLocaleString(),
-				"sales_end": new Date(item.end_sales).toLocaleString()
+				"sales_start": moment(new Date(item.start_sales)).format('MMMM Do YYYY, h:mm:ss a'),
+				"sales_end": moment(new Date(item.end_sales)).format('MMMM Do YYYY, h:mm:ss a')
 			}
 		};
 	});
