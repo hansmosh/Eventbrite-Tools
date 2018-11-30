@@ -6,8 +6,8 @@
  */
 
 var OPTIONS = {
-	startTime: "2018-08-05T12:59:55", // When should this script start checking for tickets (e.g. 5 seconds before official release time)
-	ticketQuantities: [4] // How many tickets you want to buy for each listed item
+	startTime: "2018-12-01T09:59:55", // When should this script start checking for tickets (e.g. 5 seconds before official release time)
+	ticketQuantities: [2, 2] // How many tickets you want to buy for each listed item
 };
 
 function checkLocation() {
