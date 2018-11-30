@@ -1,7 +1,7 @@
 /**
  * This script can be used to get Eventbrite event tickets. You must run it from the Eventbrite event page.
  * Change OPTIONS below to configure script parameters
- * 
+ *
  * The whole project can be found here: https://github.com/Dalimil/Eventbrite-Tools
  */
 
@@ -62,7 +62,7 @@ function isTicketAvailable(source) {
 		if (ticket && ((ticket.status_is_sold_out && !ticket.status_is_unavailable) || ticket.status_is_ended)) {
 			console.log(ticket);
 			throw new Error("SOLD OUT: " + ticket.status_is_sold_out + " or ENDED: " + ticket.status_is_ended);
-		}				
+		}
 	}
 
 	const notOnSale = findAll("\"not_on_sale\":(true|false)+", source);
@@ -81,7 +81,7 @@ function run() {
 	$.get(location.href, (data) => {
 		const ticket = getTicket(data);
 		if (!ticket || !isTicketAvailable(data)) {
-		  const moment = require('moment');
+			const moment = require('moment');
 			console.log("Unsuccessful: " + moment(new Date()).format('MMMM Do YYYY, h:mm:ss a'));
 			if (running) {
 				setTimeout(run, 1000);

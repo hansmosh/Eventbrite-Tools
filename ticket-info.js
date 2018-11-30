@@ -46,7 +46,7 @@ function createResultTooltip(data) {
 	}
 	tooltip = document.createElement("div");
 	tooltip.id = id;
-	
+
 	tooltip.style.cssText = "width: 40%; max-height: 75%; white-space: pre; overflow-y: auto; " +
 		"background-color: #333; color: #EEE; border-radius: 6px; box-shadow: 0px 0px 5px #999; " +
 		"position: fixed; left: 1em; top: 6em; z-index: 10001; padding: 1em 2em 1em 1em;";
@@ -63,7 +63,7 @@ function createResultTooltip(data) {
 
 	tooltip.appendChild(closeButton);
 	tooltip.appendChild(content);
-	document.body.appendChild(tooltip);    
+	document.body.appendChild(tooltip);
 }
 
 function getQuantities(source) {
