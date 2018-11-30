@@ -7,8 +7,7 @@
 
 var OPTIONS = {
 	startTime: "2018-08-05T12:59:55", // When should this script start checking for tickets (e.g. 5 seconds before official release time)
-	ticketIndex: 0, // There may be several ticket types in the list - set to 0 to select the first one
-	ticketQuantity: 4 // How many tickets you want to buy? - WARNING: Often limited by the event organizer to 1
+	ticketQuantities: [4] // How many tickets you want to buy for each listed item
 };
 
 function checkLocation() {
@@ -46,10 +45,9 @@ function findAll(needle, haystack) {
 	return matches;
 }
 
-function getTicket(data) {
+function getTickets(data) {
 	const ticketMatches = findAll("ticket_form_element_name\":\"([^\"]+)\"", data);
-	// console.log(ticketMatches);
-	return ticketMatches[OPTIONS.ticketIndex][1];
+	return OPTIONS.ticketQuantities.map((quantity, index) => quantity ? [ticketMatches[index][1], quantity] : undefined).filter(ticket => ticket != undefined);
 }
 
 function isTicketAvailable(source) {
@@ -58,17 +56,17 @@ function isTicketAvailable(source) {
 	const mediator = require('mediatorjs');
 	const ticketData = mediator && mediator.get('ticketOrderOptions');
 	if (ticketData && ticketData.collection) {
-		const ticket = ticketData.collection[OPTIONS.ticketIndex];
-		if (ticket && ((ticket.status_is_sold_out && !ticket.status_is_unavailable) || ticket.status_is_ended)) {
-			console.log(ticket);
-			throw new Error("SOLD OUT: " + ticket.status_is_sold_out + " or ENDED: " + ticket.status_is_ended);
-		}
+		OPTIONS.ticketQuantities.forEach((quantity, index) => {
+			const ticket = ticketData.collection[index];
+			if (quantity && ticket && ((ticket.status_is_sold_out && !ticket.status_is_unavailable) || ticket.status_is_ended)) {
+				throw new Error("SOLD OUT: " + ticket.status_is_sold_out + " or ENDED: " + ticket.status_is_ended);
+			}
+		});
 	}
 
 	const notOnSale = findAll("\"not_on_sale\":(true|false)+", source);
-	if (notOnSale[OPTIONS.ticketIndex] && notOnSale[OPTIONS.ticketIndex][1] == "true") {
-		return false;
-	}
+	const isNotOnSale = OPTIONS.ticketQuantities.some((quantity, index) => quantity && notOnSale[index] && notOnSale[index][1] == "true");
+	if (isNotOnSale) { return false };
 
 	return true;
 }
@@ -79,20 +77,26 @@ var running = true;
 function run() {
 	checkLocation();
 	$.get(location.href, (data) => {
-		const ticket = getTicket(data);
-		if (!ticket || !isTicketAvailable(data)) {
+		const tickets = getTickets(data);
+		if (tickets.length == 0 || !isTicketAvailable(data)) {
 			const moment = require('moment');
-			console.log("Unsuccessful: " + moment(new Date()).format('MMMM Do YYYY, h:mm:ss a'));
+			console.log(
+				"Unsuccessful: " +
+				moment(new Date()).format('MMMM Do YYYY, h:mm:ss a') +
+				" " +
+				(tickets.length == 0 ? "Unable to get ticket" : "Ticket is not available")
+			);
 			if (running) {
 				setTimeout(run, 1000);
 			}
 			return;
 		}
-		const payload = {
+		const payload = tickets.reduce((acc, [ticket, quantity]) => ({
+			...acc,
 			'eid': $("form input[name=eid]").attr('value'),
 			'has_javascript': 1,
-			[ticket]: OPTIONS.ticketQuantity
-		};
+			[ticket]: quantity
+		}), {});
 		console.log(payload);
 		post("https://www.eventbrite.com/orderstart", payload);
 	});
