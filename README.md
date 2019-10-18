@@ -4,7 +4,7 @@
 
 This script allows you to find all information about Eventbrite event tickets in advance - their quantity, price and release date. It is even more useful when used in combination with the Eventbrite Bot described below (`ticket-getter.js`).
 
-#### Usage
+#### Usage (Firefox)
 1. Open Firefox and navigate to your Eventbrite event
 2. Open Scratchpad (Shift + F4) and Open file `ticket-info.js`
 3. Click Run
@@ -16,7 +16,17 @@ This bot is intended to be run a short time (e.g. 10s) before Eventbrite event t
 
 **Use the startTime script option to run it only a short time before the tickets are released because it's quite aggresive in terms of its network activity, and you don't want Eventbrite to ban you.**
 
-#### Usage
+#### Usage (Chrome)
+1. Open Chrome and navigate to the Eventbrite page that you want to buy tickets for. It's very important when you get to the `Run` step that you are on the correct page.
+2. Open Dev Tools (command-option-i on a mac).
+3. In the Dev Tools, go to the Sources tab and then to Snippets. (Google this if that doesn't make sense to you).
+4. Click "+ New snippet" and name it `ticket-getter.js`.
+5. Paste in the code from this repository by that same name [from here](https://raw.githubusercontent.com/hansmosh/Eventbrite-Tools/master/ticket-getter.js) and save the file.
+6. In the [OPTIONS section of the code](https://github.com/hansmosh/Eventbrite-Tools/blob/master/ticket-getter.js#L8-L11), modify the `startTime` to be 5 seconds before the tickets go on sale, and also edit `ticketQuantities` for the amount of tickets you want. Examples: [2,2] means 2 of the first ticket and 2 of the second ticket. [1] would mean just 1 of the first ticket. [0,0,4] is to get 4 of the third ticket.
+4. Right mouse click on the snippet file name and select `Run`.
+5. Open Dev Tools console tab to watch progress, or type `stop();` to quit (or just refresh the page to stop it from running).
+
+#### Usage (Firefox)
 1. Open Firefox and navigate to your Eventbrite event
 2. Open Scratchpad (Shift + F4) and Open file `ticket-getter.js`
 3. Set `startTime` to the tickets opening time
